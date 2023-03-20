@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %} 
+    New Listing 
+{% endblock %}
+
+    {% block body %}
+    
+    <!-- @login_required in views should direct any unauthenticated users to login page. See LOGIN_URL = 'login'-->
+    
+    {% if user.is_authenticated %}
+
+    <div class="container-md mt-3 border">
+
+        <h5>Hi <strong>{{ user.username }}</strong>.</h5>
+        <p>
+            On this page you can enter a new item listing.
+            Please enter a title and description for your item.
+            Also include a URL link to an web-based image of your item.
+            <i>Our image file upload feature is coming soon!</i>
+        </p>
+
+    </div>
+
+        {% else %}
+        Please create an account to add a listing.
+        {% endif %}
+        
+    <div class="form-group">
+        <div class="mx-auto" style="width: 400px;">
+        <div class="container w-30">
+
+            <h2>Create New Listing</h2>
+
+            <form action="" method="POST">
+                <div class="form-group">
+                    {% csrf_token %}
+                    {{ form|crispy  }}
+                </div>
+                <label class="form-check-label">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+        </div>
+        </div>
+    </div>
+
+    
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+
+{% endblock %}

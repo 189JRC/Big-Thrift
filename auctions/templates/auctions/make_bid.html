@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+<div class="mx-auto" style="width: 800px;">
+    
+    <div class="card text-center">
+
+        <div class="card body">
+            
+            <br><h2>Make a bid on: {{ listing.user }}'s {{ listing.title }}</h2><br>
+            
+            <div class="card-image">
+
+                <img class="card-img-top"  style="height: 300px; width:auto;" src="{{ listing.image }}" alt="Card image cap">
+                
+                <h2>Current Bid: £{{ listing.initial_price }} </h2>
+            
+            </div>
+
+            {% if error %} 
+
+            <red>{{ error }}</red>
+
+            {% endif %} 
+
+            <div class="card-body">
+
+                <form method="POST">
+                    {% csrf_token %} 
+                    {{ bid_form.as_p }}
+                    <button type="submit" class="btn btn-primary">Make Bid</button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

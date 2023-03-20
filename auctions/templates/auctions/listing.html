@@ -1,0 +1,223 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <div class="container">
+        <meta charset="UTF-8">
+          
+        <div class="mx-auto" style="width: 800px;">
+        
+            <div class="card text-center" style="width: 50rem;" >
+
+                    <!-- Change border colour on status of listing/user-->
+
+                    <!-- Logged in user is winning bid, but listing still active - yellow border-->
+                    {% if user == bidder and listing.active == True %} 
+                    <span class="border border-warning">
+                    
+                    <!-- Logged in user is winning bid, listing is inactive - green border-->
+                    {% elif user == bidder and listing.active == False %} 
+                    <span class="border border-success">
+                    
+                    <!-- Any other scenario, light blue border-->
+                    {% else %} 
+                    <span class="border border-info">
+                    
+                    {% endif %}
+                        
+                <div class="card body">
+                    <br>
+                    <h2 class="card-title"><strong>{{ listing.title }}</h2> 
+                        <a href="#"> Posted by {{ listing.user }}</strong></a>
+                    <hr>
+
+                    <div class="card-image">
+                        
+                        <img class="card-img-top"  style="height: 300px; width:auto;" src="{{ listing.image }}" alt="Card image cap">
+                    
+                    </div>
+
+                    <div class="card-body">
+                        
+                        <p class="card-text">{{ listing.summary }}</p>
+                        
+                        <!--Which BUTTONS will the user see?-->
+                        <!--#listing active and not on user's watchlist - watch -->
+
+                        {% if not watchlist and listing.active == True %}
+                        <a href="{% url 'add_to_watchlist' listing.id %}" class="btn btn-success">Watch Item</a>
+                        {% endif %} 
+                    
+                        <!--listing active and already on watchlist - unwatch -->
+
+                        {% if watchlist and listing.active == True %}
+                        <a href="{% url 'remove_from_watchlist' listing.id %}"  class="btn btn-outline-success"> Unwatch Item </a>
+                        {% endif %} 
+                        
+                        <!--user not listing owner and active - bid -->
+
+                        {% if user.is_authenticated and user != listing.user and listing.active %}
+                        <a class="btn btn-warning" href="{% url 'make_bid' listing.id %}">Place a Bid</a>
+                        {% endif %} 
+                        
+                        <!--user is listing owner and listing is active - end listing -->
+
+                        {% if user.is_authenticated and user == listing.user and listing.active %}
+                        <a class="btn btn-warning" href="{% url 'terminate' listing.id %}">End Listing</a></li>
+                        {% endif %} 
+                        
+                    </div>
+
+                    <ul class="list-group list-group-flush">
+                        
+                        <!-- Message to be displayed for user beneath BUTTONS, and above STATUS SECTION-->
+
+                        <!-- Listing is active and has bid-->
+                        {% if bidder and listing.active == True %}
+                        <li class="list-group-item">Latest Bid: <strong>£{{ listing.initial_price }}</strong>
+
+                        <!-- Listing is active and no bids-->
+                        {% elif not bidder and listing.active == True %}
+                        <li class="list-group-item">Start Price: <strong>£{{ listing.initial_price }}</strong>
+                        
+                        <!-- Listing is inactive and has bid-->
+                        {% elif bidder and listing.active == False %}
+                        <li class="list-group-item">Winning Bid: <strong>£{{ listing.initial_price }}</strong>
+                        
+                        <!-- Listing is inactive and ended with no bids-->
+                        {% elif not bidder and listing.active == False %}
+                        <li class="list-group-item"><h5>Listing ended with no bids &#128056; NGMI</h5>
+                        {% endif %} 
+
+                    </ul>
+
+                    <li class="list-group-item">
+
+                        <!-- STATUS SECTION - messages to be displayed to user, depending on;
+                            - Listing in/active, 
+                            - User is Listing owner or not
+                            - If there is a bid/ winner-->
+
+                        <!-- No bids, listing owner is logged in, Listing active-->
+
+                        <!--listing owner is logged in-->
+                   
+                        {% if user == listing.user %}
+
+                            {% if listing.active == True %}
+
+                                {% if bidder %} 
+                                <h5><strong>{{ bidder }} is winning! &#129310;</strong></h5>
+
+                                {% else %} 
+                                <strong><h5>We are still waiting for our first bid! &#128517;</h5> </strong>
+
+                                {% endif %}
+
+                            {% elif listing.active == False %}
+
+                                {% if bidder or winner %} 
+                                <h4>{{ bidder }} was the winner! &#128176;</h4>
+
+                                {% elif not bidder or not winner %}
+                                <h6>{{ bidder}} Perhaps consider relisting this item at a lower price.</h6>
+
+                                {% endif %}
+                            
+                            {% endif %}
+                        
+                        {% endif %}
+                        
+                        {% if user != listing.user %} 
+
+                            {% if listing.active == True %} 
+                                
+                                {% if user == bidder %} 
+                                <strong><h5>You are winning! &#128513;</h5> </strong>
+
+                                {% else %}
+                                <strong><h5>Be the first to make a bid 	&#128515;</h5> </strong>
+                                {% endif %}
+                            
+                            {% elif listing.active == False %} 
+
+                                {% if user == bidder %}
+                                <h3><strong>You Won! &#127881;</strong></h3>
+
+                                {% elif not bidder or not winner %}
+                                <h6>Better luck next time!</h6>
+                                {% endif %}
+
+                            {% endif %}
+                        
+                        {% endif %}
+
+                    </li>
+                        
+                    <div class="card-body">
+
+                            <h3>Comments</h3>
+                            
+                            <!-- Conditionals for comments section at bottom of page-->
+                            <!-- If there are no comments and Listing is active-->
+
+                            {% if not comments and listing.active == True %} 
+                            Be the first to make a comment! 
+                            {% endif %}
+
+                        <ul class="list-group" style="width: auto">
+
+                            {% for comment in comments %} 
+
+                            <li class="list-group-item pb-3 pt-3">
+
+                                <h5 class="card-title"> Comment by {{ comment.user.username }}</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ comment.date }}</h6>
+                                <p class="card-text">{{ comment.text }}</p>
+
+                                <!-- Allows commenter to edit their past comments-->
+
+                                {% if user.is_authenticated and user == comment.user %}
+                                <a class="btn btn-info" href="{% url 'update_comment' comment.id %}">Update</a>
+                                <a class="btn btn-danger" href="{% url 'delete_comment' comment.id %}">Delete</a>
+                                {% endif %}
+                                {% endfor %}
+
+                            </li>
+                        
+                        </ul>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <!--Add comments to a listing-->
+
+                        <!-- Allows an authenticated user to add a comment -->
+
+                        {% if user.is_authenticated and listing.active == True %}
+                        <a href="{% url 'create_comment' listing.id %}"
+                        class="btn btn-primary">
+                        Add Comment </a>
+                        
+                        <!-- User authenticated, but listing is closed-->
+
+                        {% elif user.is_authenticated and listing.active == False %}
+                        <h5><i>Commenting for this item is now closed.</i></h5></a>
+                        
+                        <!-- user not authenticated -->
+
+                        {% else %}
+                        <h5><i>Please login if you would like to make a comment.</i></h5></a>
+                        {% endif %}
+
+                    </div>
+                </div>       
+            </div>
+        </div>
+    </div>
+</span>
+
+<br>
+                         
+{% endblock %}

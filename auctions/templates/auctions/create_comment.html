@@ -1,0 +1,42 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <div class="mx-auto" style="width: 800px;">
+        
+        <div class="card text-center">
+            
+            <div class="card body">
+
+                <h2><br>Comment on {{ listing.title }}</h2><hr>
+
+                <div class="card-image">
+
+                    <img class="card-img-top"  style="height: 300px; width:auto;" src="{{ listing.image }}" alt="Card image cap">
+                
+                </div>
+
+                {% if error %} 
+
+                <strong>{{ error }}</strong>
+
+                {% endif %} 
+
+                <div class="card-body">
+
+                    <form method="POST">
+                        {% csrf_token %} 
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Add Comment</button>
+                    </form>
+
+                </div>
+                            
+
+            </div>
+
+        </div>
+
+    </div>
+    
+{% endblock body %}

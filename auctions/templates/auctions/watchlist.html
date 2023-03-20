@@ -1,0 +1,62 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+<div class="container">
+    <div class="row text-center">
+
+        <h2>Watchlist for {{ user }}</h2>
+    </div>
+
+    {% if watchlist %}
+    {% for item in watchlist %}
+    
+    <div class="container p-3 my-3 border"> 
+        <div class="row">
+            <div class="col-sm-4">
+
+                <h5 class="card-title"><a href="/listing/{{ item.listing.id }}">{{ item.listing.title }}</h5></a>
+                    <br>Item was posted on: {{ item.listing.time_up }}
+                    <br>Item posted by:   {{ item.listing.user }}
+           
+            </div>
+
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-2">
+
+                <!-- Item status/ price display-->
+                <!-- If item is active, 'current price'-->
+
+                {% if item.listing.active == True %}
+                <br><a class="btn btn-warning" href="{% url 'make_bid' item.listing.id %}">Current Price: £{{ item.listing.initial_price }}</a>
+                    
+                <!-- If Listing inactive, 'Winning Bid'-->
+                {% else %} 
+                <br><a class="btn btn-secondary" href="#">Winning Bid: £{{ item.listing.initial_price }}</a>
+                
+                {% endif %} 
+
+            </div>
+
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-2">&nbsp;
+
+                <a href="/listing/{{ item.listing.id }}"><img src="{{ item.listing.image }}" 
+                    style="height: 100px; width:auto;"  alt="Card image cap"></a>
+
+            </div>
+
+        </div> 
+    </div>
+        
+    {% endfor %}
+    {% else %}
+    <h4>You currently have no items on your watchlist</h4>
+    {% endif %}
+        
+{% endblock %}
+    </div>
+</div>  

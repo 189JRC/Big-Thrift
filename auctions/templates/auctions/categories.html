@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <div class="container p-3 my-3"> 
+
+        <h1>Choose a Category:</h1>
+
+    </div>
+
+        {% for category in categories %} 
+
+        <div class="container p-3 my-3 border"> 
+            <div class="row">
+                <div class="col-sm-4">
+
+                    <h3 class="card-title"><a href="/categories/{{ category }}">{{ category.category }}</h3></a>
+               
+                </div>
+            </div>
+        </div>
+
+        {% endfor %} 
+
+{% endblock %}

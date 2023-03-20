@@ -1,0 +1,73 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+       
+    <div class="container">
+
+        <h2>All Listings</h2><br>
+
+        <div class="row" style="row-gap: 50px; grid-column-gap: 40px;">
+
+            {% for listing in listing_list %}
+
+            <div class="card" style="width: 18rem;">
+
+                <img class="card-img-top" src="{{ listing.image }}" alt="Card image cap">
+
+                <div class="card-body">
+
+                  <h5 class="card-title"><a href="/listing/{{ listing.id }}">{{ listing.title }}</a></h5>
+                  <p class="card-text">{{ listing.snippet }}</p>
+
+                </div>
+        
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                  <!-- Info Status buttons at bottom of Listing cards-->
+                  <!-- Current Price If Listing is active-->
+
+                    {% if listing.active == True %} 
+                    <label class="btn btn-success">
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked> 
+                    Current Price: £{{ listing.initial_price }}
+                    </label>
+                    
+                    <!--Winning Bid if Listing is inactive-->
+                      {% else %} 
+                    <label class="btn btn-success">
+                    <input type="radio" name="options" id="option1" autocomplete="off" checked>
+                    Winning Bid: £{{ listing.initial_price }}
+                    </label>
+          
+                    {% endif %}
+
+        </div>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+
+                  <!-- Second Info Status buttons at bottom of Listing cards-->
+                  <!-- Active if Listing is active-->
+                  
+                  {% if listing.active == True %} 
+                  <label class="btn btn-outline-info">
+                  <input type="radio" name="options" id="option1" autocomplete="off" checked> <strong>Active</strong>
+                  </label>
+
+                  <!-- Ended if Listing is inactive-->
+
+                  {% else %} 
+                  <label class="btn btn-secondary">
+                  <input type="radio" name="options" id="option1" autocomplete="off" checked> <strong>Auction has Ended</strong>
+                  </label>
+                  {% endif %} 
+
+                </div>
+        </div>
+        {% endfor %}
+    </div>
+
+<br>
+<br>
+ 
+{% endblock %}
+

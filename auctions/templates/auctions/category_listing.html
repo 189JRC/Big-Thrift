@@ -1,0 +1,58 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    
+    <div class="container p-3 my-3"> 
+
+            <h1>Listings for {{ category }}:</h1>
+
+    </div>
+
+        {% for listing in listings %} 
+
+        <div class="container p-3 my-3 border"> 
+            <div class="row">
+                <div class="col-sm-4">
+
+                    <h5 class="card-title"><a href="/listing/{{ listing.id }}">{{ listing.title }}</h5></a>
+                    <br>Item was posted on: {{ listing.time_up }}
+                    <br>Item posted by:   {{ listing.user }}
+
+                </div>
+
+                <div class="col-sm-2">
+                </div>
+
+                <div class="col-sm-2">
+                
+
+                    <!-- Item status/ price display-->
+                    <!-- If item is active, 'current price'-->
+
+                    {% if listing.active == True %}
+                    <br><a class="btn btn-warning" href="{% url 'listing' listing.id %}">Current Price: £{{ listing.initial_price }}</a>
+                        
+                    <!-- If Listing inactive, 'Winning Bid'-->
+                    {% else %} 
+                    <br><a class="btn btn-secondary" href="#">Winning Bid: £{{ listing.initial_price }}</a>
+                    
+                    {% endif %} 
+    
+
+                </div>
+
+                <div class="col-sm-2">
+                </div>
+
+                <div class="col-sm-2">&nbsp;
+
+                    <a href="/listing/{{ listing.id }}"><img src="{{ listing.image }}" 
+                        style="height: 100px; width:auto;"  alt="Card image cap"></a>
+                        
+                </div>
+            </div>
+    </div>
+
+    {% endfor %} 
+
+{% endblock %}
